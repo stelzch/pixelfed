@@ -82,7 +82,7 @@ class BaseApiController extends Controller
     public function accounts(Request $request, $id)
     {
         abort_if(!$request->user(), 403);
-        $profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail(intval($id));
         $resource = new Fractal\Resource\Item($profile, new AccountTransformer());
         $res = $this->fractal->createData($resource)->toArray();
 
@@ -92,7 +92,7 @@ class BaseApiController extends Controller
     public function accountFollowers(Request $request, $id)
     {
         abort_if(!$request->user(), 403);
-        $profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail(intval($id));
         $followers = $profile->followers;
         $resource = new Fractal\Resource\Collection($followers, new AccountTransformer());
         $res = $this->fractal->createData($resource)->toArray();
@@ -103,7 +103,7 @@ class BaseApiController extends Controller
     public function accountFollowing(Request $request, $id)
     {
         abort_if(!$request->user(), 403);
-        $profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail(intval($id));
         $following = $profile->following;
         $resource = new Fractal\Resource\Collection($following, new AccountTransformer());
         $res = $this->fractal->createData($resource)->toArray();
@@ -129,7 +129,7 @@ class BaseApiController extends Controller
         $since_id = $request->since_id ?? false;
         $only_media = $request->only_media ?? false;
         $user = Auth::user();
-        $account = Profile::whereNull('status')->findOrFail($id);
+        $account = Profile::whereNull('status')->findOrFail(intval($id));
         $statuses = $account->statuses()->getQuery(); 
         if($only_media == true) {
             $statuses = $statuses

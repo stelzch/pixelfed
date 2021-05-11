@@ -59,7 +59,7 @@ class AdminController extends Controller
 
 	public function showStatus(Request $request, $id)
 	{
-		$status = Status::findOrFail($id);
+		$status = Status::findOrFail(intval($id));
 
 		return view('admin.statuses.show', compact('status'));
 	}
@@ -82,7 +82,7 @@ class AdminController extends Controller
 
 	public function showReport(Request $request, $id)
 	{
-		$report = Report::findOrFail($id);
+		$report = Report::findOrFail(intval($id));
 		return view('admin.reports.show', compact('report'));
 	}
 
@@ -99,7 +99,7 @@ class AdminController extends Controller
 	{
 		$appeal = AccountInterstitial::whereNotNull('appeal_requested_at')
 			->whereNull('appeal_handled_at')
-			->findOrFail($id);
+			->findOrFail(intval($id));
 		$meta = json_decode($appeal->meta);
 		return view('admin.reports.show_appeal', compact('appeal', 'meta'));
 	}
@@ -117,7 +117,7 @@ class AdminController extends Controller
 	{
 		$appeal = AccountInterstitial::whereType('post.autospam')
 			->whereNull('appeal_handled_at')
-			->findOrFail($id);
+			->findOrFail(intval($id));
 		$meta = json_decode($appeal->meta);
 		return view('admin.reports.show_spam', compact('appeal', 'meta'));
 	}
@@ -131,7 +131,7 @@ class AdminController extends Controller
 		$action = $request->input('action');
 		$appeal = AccountInterstitial::whereType('post.autospam')
 			->whereNull('appeal_handled_at')
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		$meta = json_decode($appeal->meta);
 
@@ -169,7 +169,7 @@ class AdminController extends Controller
 		$action = $request->input('action');
 		$appeal = AccountInterstitial::whereNotNull('appeal_requested_at')
 			->whereNull('appeal_handled_at')
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		if($action == 'dismiss') {
 			$appeal->appeal_handled_at = now();
@@ -236,7 +236,7 @@ class AdminController extends Controller
 
 	public function profileShow(Request $request, $id)
 	{
-		$profile = Profile::findOrFail($id);
+		$profile = Profile::findOrFail(intval($id));
 		$user = $profile->user;
 		return view('admin.profiles.edit', compact('profile', 'user'));
 	}
@@ -273,7 +273,7 @@ class AdminController extends Controller
 
 	public function messagesShow(Request $request, $id)
 	{
-		$message = Contact::findOrFail($id);
+		$message = Contact::findOrFail(intval($id));
 		return view('admin.messages.show', compact('message'));
 	}
 
@@ -283,7 +283,7 @@ class AdminController extends Controller
 			'id' => 'required|integer|min:1'
 		]);
 		$id = $request->input('id');
-		$message = Contact::findOrFail($id);
+		$message = Contact::findOrFail(intval($id));
 		if($message->read_at) {
 			return;
 		}
@@ -305,13 +305,13 @@ class AdminController extends Controller
 
 	public function newsroomEdit(Request $request, $id)
 	{
-		$news = Newsroom::findOrFail($id);
+		$news = Newsroom::findOrFail(intval($id));
 		return view('admin.newsroom.edit', compact('news'));
 	}
 
 	public function newsroomDelete(Request $request, $id)
 	{
-		$news = Newsroom::findOrFail($id);
+		$news = Newsroom::findOrFail(intval($id));
 		$news->delete();
 		return redirect('/i/admin/newsroom');
 	}
@@ -325,7 +325,7 @@ class AdminController extends Controller
 		]);
 		$changed = false;
 		$changedFields = [];
-		$news = Newsroom::findOrFail($id);
+		$news = Newsroom::findOrFail(intval($id));
 		$fields = [
 			'title' => 'string',
 			'summary' => 'string',

@@ -320,7 +320,7 @@ Route::domain(config('pixelfed.domain.app'))->middleware(['validemail', 'twofact
 	Route::group(['prefix' => 'account'], function () {
 		Route::redirect('/', '/');
 		Route::get('direct', 'AccountController@direct');
-		Route::get('direct/t/{id}', 'AccountController@directMessage');
+		Route::get('direct/t/{id}', 'AccountController@directMessage')->whereNumber('id');
 		Route::get('activity', 'AccountController@notifications')->name('notifications');
 		Route::get('follow-requests', 'AccountController@followRequests')->name('follow-requests');
 		Route::post('follow-requests', 'AccountController@followRequestHandle');

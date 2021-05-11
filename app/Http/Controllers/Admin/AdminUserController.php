@@ -41,21 +41,21 @@ trait AdminUserController
 
 	public function userShow(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		return view('admin.users.show', compact('user', 'profile'));
 	}
 
 	public function userEdit(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		return view('admin.users.edit', compact('user', 'profile'));
 	}
 
 	public function userEditSubmit(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		$changed = false;
 		$fields = [];
@@ -111,7 +111,7 @@ trait AdminUserController
 
 	public function userActivity(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		$logs = $user->accountLog()->orderByDesc('created_at')->paginate(10);
 		return view('admin.users.activity', compact('user', 'profile', 'logs'));
@@ -119,7 +119,7 @@ trait AdminUserController
 
 	public function userMessage(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		return view('admin.users.message', compact('user', 'profile'));
 	}
@@ -129,7 +129,7 @@ trait AdminUserController
 		$this->validate($request, [
 			'message' => 'required|string|min:5|max:500'
 		]);
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		$message = $request->input('message');
 		Mail::to($user->email)->send(new AdminMessage($message));
@@ -149,14 +149,14 @@ trait AdminUserController
 
 	public function userModTools(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		return view('admin.users.modtools', compact('user', 'profile'));
 	}
 
 	public function userModLogs(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		$logs = ModLog::whereObjectUid($user->id)
 			->orderByDesc('created_at')
@@ -169,7 +169,7 @@ trait AdminUserController
 		$this->validate($request, [
 			'message' => 'required|string|min:5|max:500'
 		]);
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		$msg = $request->input('message');
 		ModLogService::boot()
@@ -185,14 +185,14 @@ trait AdminUserController
 
 	public function userDelete(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 		return view('admin.users.delete', compact('user', 'profile'));
 	}
 
 	public function userDeleteProcess(Request $request, $id)
 	{
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$profile = $user->profile;
 
 		if(config('pixelfed.account_deletion') == false) {
@@ -286,7 +286,7 @@ trait AdminUserController
 		$this->validate($request, [
 			'mid' => 'required|integer|exists:mod_logs,id'
 		]);
-		$user = User::findOrFail($id);
+		$user = User::findOrFail(intval($id));
 		$uid = $request->user()->id;
 		$mid = $request->input('mid');
 		$ml = ModLog::whereUserId($uid)->findOrFail($mid)->delete();

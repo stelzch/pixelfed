@@ -160,7 +160,7 @@ class DirectMessageController extends Controller
 						'messages' => []
 					];
 				});
-			} 
+			}
 		} elseif(config('database.default') == 'mysql') {
 			if($action == 'inbox') {
 				$dms = DirectMessage::selectRaw('*, max(created_at) as createdAt')
@@ -291,13 +291,13 @@ class DirectMessageController extends Controller
 	public function create(Request $request)
 	{
 		$this->validate($request, [
-			'to_id' => 'required',
+			'to_id' => 'required|integer',
 			'message' => 'required|string|min:1|max:500',
 			'type'  => 'required|in:text,emoji'
 		]);
 
 		$profile = $request->user()->profile;
-		$recipient = Profile::where('id', '!=', $profile->id)->findOrFail($request->input('to_id'));
+		$recipient = Profile::where('id', '!=', $profile->id)->findOrFail(intval($request->input('to_id')));
 
 		abort_if(in_array($profile->id, $recipient->blockedIds()->toArray()), 403);
 		$msg = $request->input('message');
@@ -334,7 +334,7 @@ class DirectMessageController extends Controller
 				$dm->type = 'link';
 				$dm->meta = [
 					'domain' => parse_url($msg, PHP_URL_HOST),
-					'local' => parse_url($msg, PHP_URL_HOST) == 
+					'local' => parse_url($msg, PHP_URL_HOST) ==
 					parse_url(config('app.url'), PHP_URL_HOST)
 				];
 				$dm->save();
@@ -385,7 +385,7 @@ class DirectMessageController extends Controller
 			'pid' => 'required'
 		]);
 		$uid = $request->user()->profile_id;
-		$pid = $request->input('pid');
+		$pid = intval($request->input('pid'));
 		$max_id = $request->input('max_id');
 		$min_id = $request->input('min_id');
 
@@ -509,7 +509,7 @@ class DirectMessageController extends Controller
 
 		$user = $request->user();
 		$profile = $user->profile;
-		$recipient = Profile::where('id', '!=', $profile->id)->findOrFail($request->input('to_id'));
+		$recipient = Profile::where('id', '!=', $profile->id)->findOrFail(intval($request->input('to_id')));
 		abort_if(in_array($profile->id, $recipient->blockedIds()->toArray()), 403);
 
 		if((!$recipient->domain && $recipient->user->settings->public_dm == false) || $recipient->is_private) {
@@ -525,7 +525,7 @@ class DirectMessageController extends Controller
 		if(config('pixelfed.enforce_account_limit') == true) {
 			$size = Cache::remember($user->storageUsedKey(), now()->addDays(3), function() use($user) {
 				return Media::whereUserId($user->id)->sum('size') / 1000;
-			}); 
+			});
 			$limit = (int) config('pixelfed.max_account_size');
 			if ($size >= $limit) {
 				abort(403, 'Account size limit reached.');

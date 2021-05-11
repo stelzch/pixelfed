@@ -119,7 +119,7 @@ class StoryController extends Controller
 		$x = round($request->input('x'));
 		$y = round($request->input('y'));
 
-		$story = Story::whereProfileId($user->profile_id)->findOrFail($id);
+		$story = Story::whereProfileId($user->profile_id)->findOrFail(intval($id));
 
 		$path = storage_path('app/' . $story->path);
 
@@ -154,7 +154,7 @@ class StoryController extends Controller
 		$id = $request->input('media_id');
 		$user = $request->user();
 		$story = Story::whereProfileId($user->profile_id)
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		$story->active = true;
 		$story->duration = $request->input('duration', 10);
@@ -174,7 +174,7 @@ class StoryController extends Controller
 		$user = $request->user();
 
 		$story = Story::whereProfileId($user->profile_id)
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		if(Storage::exists($story->path) == true) {
 			Storage::delete($story->path);
@@ -235,7 +235,7 @@ class StoryController extends Controller
 		abort_if(!config('instance.stories.enabled') || !$request->user(), 404);
 
 		$authed = $request->user()->profile;
-		$profile = Profile::findOrFail($id);
+		$profile = Profile::findOrFail(intval($id));
 		if($id == $authed->id) {
 			$publicOnly = true;
 		} else {
@@ -276,7 +276,7 @@ class StoryController extends Controller
 		$story = Story::with('profile')
 			->whereActive(true)
 			->where('expires_at', '>', now())
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		$profile = $story->profile;
 		if($story->profile_id == $authed->id) {
@@ -307,7 +307,7 @@ class StoryController extends Controller
 		abort_if(!config('instance.stories.enabled') || !$request->user(), 404);
 
 		$authed = $request->user()->profile;
-		$profile = Profile::findOrFail($id);
+		$profile = Profile::findOrFail(intval($id));
 		if($id == $authed->id) {
 			$publicOnly = true;
 		} else {
@@ -367,7 +367,7 @@ class StoryController extends Controller
 		$story = Story::with('profile')
 			->where('expires_at', '>', now())
 			->orderByDesc('expires_at')
-			->findOrFail($id);
+			->findOrFail(intval($id));
 
 		$profile = $story->profile;
 

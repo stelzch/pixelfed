@@ -30,7 +30,7 @@ trait AdminReportController
             return abort(403);
         }
 
-        $report = Report::findOrFail($id);
+        $report = Report::findOrFail(intval($id));
 
         $this->handleReportAction($report, $action);
 

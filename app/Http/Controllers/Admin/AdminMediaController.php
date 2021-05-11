@@ -48,7 +48,7 @@ trait AdminMediaController
 
 	public function mediaShow(Request $request, $id)
 	{
-		$media = Media::findOrFail($id);
+		$media = Media::findOrFail(intval($id));
 		return view('admin.media.show', compact('media'));
 	}
 }

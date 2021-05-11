@@ -119,7 +119,7 @@ class ApiV1Controller extends Controller
             $key = 'user:last_active_at:id:'.$id;
             $ttl = now()->addMinutes(5);
             Cache::remember($key, $ttl, function() use($id) {
-                $user = User::findOrFail($id);
+                $user = User::findOrFail(intval($id));
                 $user->last_active_at = now();
                 $user->save();
                 return;
@@ -149,7 +149,7 @@ class ApiV1Controller extends Controller
      */
 	public function accountById(Request $request, $id)
 	{
-		$profile = Profile::whereNull('status')->findOrFail($id);
+		$profile = Profile::whereNull('status')->findOrFail(intval($id));
 		$resource = new Fractal\Resource\Item($profile, new AccountTransformer());
 		$res = $this->fractal->createData($resource)->toArray();
 
@@ -223,7 +223,7 @@ class ApiV1Controller extends Controller
         abort_if(!$request->user(), 403);
 
         $user = $request->user();
-        $profile = Profile::whereNull('status')->findOrFail($id);
+        $profile = Profile::whereNull('status')->findOrFail(intval($id));
         $limit = $request->input('limit') ?? 40;
 
         if($profile->domain) {
@@ -264,7 +264,7 @@ class ApiV1Controller extends Controller
         abort_if(!$request->user(), 403);
 
         $user = $request->user();
-        $profile = Profile::whereNull('status')->findOrFail($id);
+        $profile = Profile::whereNull('status')->findOrFail(intval($id));
         $limit = $request->input('limit') ?? 40;
 
         if($profile->domain) {
@@ -316,7 +316,7 @@ class ApiV1Controller extends Controller
             'limit' => 'nullable|integer|min:1|max:80'
         ]);
 
-        $profile = Profile::whereNull('status')->findOrFail($id);
+        $profile = Profile::whereNull('status')->findOrFail(intval($id));
 
         $limit = $request->limit ?? 20;
         $max_id = $request->max_id;
@@ -415,7 +415,7 @@ class ApiV1Controller extends Controller
 
         $target = Profile::where('id', '!=', $user->profile_id)
             ->whereNull('status')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         $private = (bool) $target->is_private;
         $remote = (bool) $target->domain;
@@ -504,7 +504,7 @@ class ApiV1Controller extends Controller
 
         $target = Profile::where('id', '!=', $user->profile_id)
             ->whereNull('status')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         $private = (bool) $target->is_private;
         $remote = (bool) $target->domain;
@@ -661,7 +661,7 @@ class ApiV1Controller extends Controller
             abort(400, 'You cannot block yourself');
         }
 
-        $profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail(intval($id));
 
         if($profile->user->is_admin == true) {
             abort(400, 'You cannot block an admin');
@@ -705,7 +705,7 @@ class ApiV1Controller extends Controller
             abort(400, 'You cannot unblock yourself');
         }
 
-        $profile = Profile::findOrFail($id);
+        $profile = Profile::findOrFail(intval($id));
 
         UserFilter::whereUserId($pid)
             ->whereFilterableId($profile->id)
@@ -798,7 +798,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -837,7 +837,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1138,7 +1138,7 @@ class ApiV1Controller extends Controller
 
         $media = Media::whereUserId($user->id)
             ->whereNull('status_id')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         $media->caption = $request->input('description');
         $media->save();
@@ -1194,7 +1194,7 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         $pid = $user->profile_id;
 
-        $account = Profile::findOrFail($id);
+        $account = Profile::findOrFail(intval($id));
 
         $filter = UserFilter::firstOrCreate([
             'user_id'         => $pid,
@@ -1226,7 +1226,7 @@ class ApiV1Controller extends Controller
         $user = $request->user();
         $pid = $user->profile_id;
 
-        $account = Profile::findOrFail($id);
+        $account = Profile::findOrFail(intval($id));
 
         $filter = UserFilter::whereUserId($pid)
             ->whereFilterableId($account->id)
@@ -1552,7 +1552,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1581,7 +1581,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1631,7 +1631,7 @@ class ApiV1Controller extends Controller
 
         $user = $request->user();
 
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1665,7 +1665,7 @@ class ApiV1Controller extends Controller
 
         $limit = $request->input('limit') ?? 40;
         $user = $request->user();
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1706,7 +1706,7 @@ class ApiV1Controller extends Controller
 
         $limit = $request->input('limit') ?? 40;
         $user = $request->user();
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1876,7 +1876,7 @@ class ApiV1Controller extends Controller
         abort_if(!$request->user(), 403);
 
         $status = Status::whereProfileId($request->user()->profile->id)
-        ->findOrFail($id);
+        ->findOrFail(intval($id));
 
         $resource = new Fractal\Resource\Item($status, new StatusTransformer());
 
@@ -1901,7 +1901,7 @@ class ApiV1Controller extends Controller
         abort_if(!$request->user(), 403);
 
         $user = $request->user();
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -1943,7 +1943,7 @@ class ApiV1Controller extends Controller
         abort_if(!$request->user(), 403);
 
         $user = $request->user();
-        $status = Status::findOrFail($id);
+        $status = Status::findOrFail(intval($id));
 
         if($status->profile_id !== $user->profile_id) {
             if($status->scope == 'private') {
@@ -2040,7 +2040,7 @@ class ApiV1Controller extends Controller
 
         $status = Status::whereNull('uri')
             ->whereScope('public')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         Bookmark::firstOrCreate([
             'status_id' => $status->id,
@@ -2064,7 +2064,7 @@ class ApiV1Controller extends Controller
 
         $status = Status::whereNull('uri')
             ->whereScope('public')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         Bookmark::firstOrCreate([
             'status_id' => $status->id,

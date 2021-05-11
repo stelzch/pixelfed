@@ -254,7 +254,7 @@ class Helpers {
 
 		if($local) {
 			$id = (int) last(explode('/', $url));
-			return Status::whereNotIn('scope', ['draft','archived'])->findOrFail($id);
+			return Status::whereNotIn('scope', ['draft','archived'])->findOrFail(intval($id));
 		}
 
 		$cached = Status::whereNotIn('scope', ['draft','archived'])

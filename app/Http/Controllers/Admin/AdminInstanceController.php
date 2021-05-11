@@ -88,7 +88,7 @@ trait AdminInstanceController
 
 	public function instanceShow(Request $request, $id)
 	{
-		$instance = Instance::findOrFail($id);
+		$instance = Instance::findOrFail(intval($id));
 		return view('admin.instances.show', compact('instance'));
 	}
 
@@ -104,7 +104,7 @@ trait AdminInstanceController
 			],
 		]);
 
-		$instance = Instance::findOrFail($id);
+		$instance = Instance::findOrFail(intval($id));
 		$unlisted = $instance->unlisted;
 		$autocw = $instance->auto_cw;
 		$banned = $instance->banned;

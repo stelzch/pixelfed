@@ -135,7 +135,7 @@ class InternalApiController extends Controller
         $this->validate($request, [
             'limit' => 'nullable|int|min:1|max:6'
         ]);
-        $parent = Status::whereScope('public')->findOrFail($id);
+        $parent = Status::whereScope('public')->findOrFail(intval($id));
         $limit = $request->input('limit') ?? 3;
         $children = Status::whereInReplyToId($parent->id)
             ->orderBy('created_at', 'desc')
@@ -350,7 +350,7 @@ class InternalApiController extends Controller
             'limit' => 'nullable|integer|min:1|max:24'
         ]);
 
-        $profile = Profile::whereNull('status')->findOrFail($id);
+        $profile = Profile::whereNull('status')->findOrFail(intval($id));
 
         $limit = $request->limit ?? 9;
         $max_id = $request->max_id;
@@ -418,7 +418,7 @@ class InternalApiController extends Controller
     {
         $profile = Profile::whereNull('status')
             ->whereNotNull('domain')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
         $user = Auth::user();
 
         return view('profile.remote', compact('profile', 'user'));

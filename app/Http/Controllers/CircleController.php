@@ -63,7 +63,7 @@ class CircleController extends Controller
 
     public function show(Request $request, $id)
     {
-        $circle = Circle::findOrFail($id);
+        $circle = Circle::findOrFail(intval($id));
     	return view('account.circles.show', compact('circle'));
     }
 }

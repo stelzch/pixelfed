@@ -53,7 +53,7 @@ trait AdminDiscoverController
 
 	public function discoverCategoryEdit(Request $request, $id)
 	{
-		$category = DiscoverCategory::findOrFail($id);
+		$category = DiscoverCategory::findOrFail(intval($id));
 		return view('admin.discover.show', compact('category'));
 	}
 
@@ -71,7 +71,7 @@ trait AdminDiscoverController
 		$media = (int) $request->input('media');
 		$media = Media::findOrFail($media);
 
-		$category = DiscoverCategory::findOrFail($id);
+		$category = DiscoverCategory::findOrFail(intval($id));
 		$category->name = $name;
 		$category->active = $active;
 		$category->media_id = $media->id;

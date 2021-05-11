@@ -81,7 +81,7 @@ class AdminApiController extends Controller
         $action = $request->input('action');
 
         if ($type == 'status') {
-            $status = Status::findOrFail($id);
+            $status = Status::findOrFail(intval($id));
             switch ($action) {
                 case 'cw':
                     $status->is_nsfw = true;
@@ -101,7 +101,7 @@ class AdminApiController extends Controller
                     break;
             }
         } else if ($type == 'profile') {
-            $profile = Profile::findOrFail($id);
+            $profile = Profile::findOrFail(intval($id));
             switch ($action) {
 
                 case 'delete':

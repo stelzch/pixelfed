@@ -74,7 +74,7 @@ class NotificationService {
 	public static function getNotification($id)
 	{
 		return Cache::remember('service:notification:'.$id, now()->addMonths(3), function() use($id) {
-			$n = Notification::with('item')->findOrFail($id);
+			$n = Notification::with('item')->findOrFail(intval($id));
 			$fractal = new Fractal\Manager();
 			$fractal->setSerializer(new ArraySerializer());
 			$resource = new Fractal\Resource\Item($n, new NotificationTransformer());

@@ -200,7 +200,7 @@ class PublicApiController extends Controller
     public function statusLikes(Request $request, $username, $id)
     {
         $profile = Profile::whereUsername($username)->whereNull('status')->firstOrFail();
-        $status = Status::whereProfileId($profile->id)->findOrFail($id);
+        $status = Status::whereProfileId($profile->id)->findOrFail(intval($id));
         $this->scopeCheck($profile, $status);
         $likes = $this->getLikes($status);
         return response()->json([
@@ -211,7 +211,7 @@ class PublicApiController extends Controller
     public function statusShares(Request $request, $username, $id)
     {
         $profile = Profile::whereUsername($username)->whereNull('status')->firstOrFail();
-        $status = Status::whereProfileId($profile->id)->findOrFail($id);
+        $status = Status::whereProfileId($profile->id)->findOrFail(intval($id));
         $this->scopeCheck($profile, $status);
         $shares = $this->getShares($status);
         return response()->json([
@@ -590,7 +590,7 @@ class PublicApiController extends Controller
     public function accountFollowers(Request $request, $id)
     {
         abort_unless(Auth::check(), 403);
-        $profile = Profile::with('user')->whereNull('status')->whereNull('domain')->findOrFail($id);
+        $profile = Profile::with('user')->whereNull('status')->whereNull('domain')->findOrFail(intval($id));
         if(Auth::id() != $profile->user_id && $profile->is_private || !$profile->user->settings->show_profile_followers) {
             return response()->json([]);
         }
@@ -608,7 +608,7 @@ class PublicApiController extends Controller
         $profile = Profile::with('user')
             ->whereNull('status')
             ->whereNull('domain')
-            ->findOrFail($id);
+            ->findOrFail(intval($id));
 
         // filter by username
         $search = $request->input('fbu');
@@ -647,7 +647,7 @@ class PublicApiController extends Controller
             'limit' => 'nullable|integer|min:1|max:24'
         ]);
 
-        $profile = Profile::whereNull('status')->findOrFail($id);
+        $profile = Profile::whereNull('status')->findOrFail(intval($id));
 
         $limit = $request->limit ?? 9;
         $max_id = $request->max_id;

@@ -36,7 +36,7 @@ class StatusController extends Controller
 		$status = Status::whereProfileId($user->id)
 				->whereNull('reblog_of_id')
 				->whereIn('scope', ['public','unlisted', 'private'])
-				->findOrFail($id);
+				->findOrFail(intval($id));
 
 		if($status->uri || $status->url) {
 			$url = $status->uri ?? $status->url;
@@ -98,7 +98,7 @@ class StatusController extends Controller
 		abort(404);
 		$status = Status::whereNull('reblog_of_id')
 				->whereIn('scope', ['public', 'unlisted'])
-				->findOrFail($id);
+				->findOrFail(intval($id));
 		return redirect($status->url());
 	}
 
@@ -139,7 +139,7 @@ class StatusController extends Controller
 
 		$status = Status::whereProfileId($user->id)
 				->whereNotIn('visibility',['draft','direct'])
-				->findOrFail($id);
+				->findOrFail(intval($id));
 
 		abort_if($status->uri, 404);
 
@@ -297,7 +297,7 @@ class StatusController extends Controller
 		$user = Auth::user()->profile;
 		$status = Status::whereProfileId($user->id)
 				->with(['media'])
-				->findOrFail($id);
+				->findOrFail(intval($id));
 		$licenses = License::get();
 		return view('status.edit', compact('user', 'status', 'licenses'));
 	}
@@ -308,7 +308,7 @@ class StatusController extends Controller
 		$user = Auth::user()->profile;
 		$status = Status::whereProfileId($user->id)
 				->with(['media'])
-				->findOrFail($id);
+				->findOrFail(intval($id));
 
 		$this->validate($request, [
 		  'license'      => 'nullable|integer|min:1|max:16',
@@ -383,7 +383,7 @@ class StatusController extends Controller
 		$id = $request->input('item');
 		$state = $request->input('disableComments');
 
-		$status = Status::findOrFail($id);
+		$status = Status::findOrFail(intval($id));
 
 		if($status->profile_id != $user->profile->id && $user->is_admin == false) {
 			abort(403);
